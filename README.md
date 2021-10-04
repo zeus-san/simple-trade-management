@@ -1,4 +1,4 @@
-# simple-trade-management
+# sistema-de-fechamento-de-caixa-simples
 Gerenciamento de comercio simples contruido em python
 possui apenas algumas funções básicas
 planejo atualizar
