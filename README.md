@@ -19,7 +19,7 @@ Requisitos
 
 > Python Atualizado
 
-
+Para iniciar roda o arquivo Menu_Principal.py
 
 
 
