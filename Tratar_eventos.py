@@ -125,6 +125,7 @@ class principal:
             return numero
         except:
             pass
+        
 class cadastrar:
     def iniciar(self,window,event,values):
         self.window = window
