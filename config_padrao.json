@@ -1,0 +1,4 @@
+{
+    "generos":["Alimento","Limpeza","Frios","Bebidas","Cigarro"],
+    "campos":["id","nome","valor_venda"]
+}
