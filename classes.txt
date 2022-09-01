@@ -5,3 +5,16 @@ Menu_atualizar
 sql_comands
 historico
 config
+item
+
+
+
+
+x           y
+100         valor_kg
+x1          y2
+varialver   valor
+
+x1 * y = y2 * x
+x1 = (y2*x)/y
+variavel = (valor*100)/valor_kg

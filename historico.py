@@ -8,19 +8,20 @@ class historico:
             arquivo.close()
             
             
-    def add_venda(self,lista):
+    def add_venda(self,lista,valor_total):
         self.criar_arquivo()
         texto_inserir = ''
         texto_inserir += '+-+-+'*15+'\n'
         dados_data = datetime.now().strftime('%H:%M %d/%m')
-        texto_inserir += f"    Venda {dados_data} \n"
+        texto_inserir += f"    Venda \t\t\t\t\t{dados_data} \n"
+        texto_inserir += f'   id   |  Unds  |  Qtds  |                  Nome                  | Val.Total\n'
         venda = ''
         for row in lista:
-
-            lista_str = f'QUANTIDADE = {row[3]} NOME="{row[1]}" VALOR={row[2]} ID={row[0]}'
+            lista_str = f'''{str(row[0]).center(8):.8s}|{str(row[1]).center(8):.8s}|{str(row[2]).center(8):.8s}|{str(row[3]).center(40):.40s}|{str(row[4]).center(10):.10s}'''
             lista_str += '\n'
             venda += lista_str
         texto_inserir += venda
+        texto_inserir += f'Total \t\t {valor_total}\n'
         texto_inserir += '+-+-+'*15+'\n'
         self.inserir_no_arquivo(texto_inserir)
 

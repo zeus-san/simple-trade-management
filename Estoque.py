@@ -10,7 +10,7 @@ class Estoque:
         vsql = f'SELECT * FROM tb_produtos WHERE N_ID={identi}'
         produtos_database=self.consulta(vsql)
         produto = Produto()
-        print(produtos_database,len(produtos_database))
+        print(produtos_database,len(produtos_database),'estoque alert')
         if len(produtos_database) == 0:
             produto = ''
         else:
@@ -32,8 +32,8 @@ class Estoque:
             produto.preencher_dados(row)
             lista_produtos.append(produto)
         return lista_produtos
-    def mudar_quantidade_venda(self,produto,q):#update
-        vsql = f'UPDATE tb_produtos SET N_QUANTIDADE=N_QUANTIDADE-{q} WHERE N_ID={produto.id}'
+    def mudar_quantidade_venda(self,produto_id:int,quantidade:int):
+        vsql = f'UPDATE tb_produtos SET N_QUANTIDADE=N_QUANTIDADE-{quantidade} WHERE N_ID={produto_id}'
         self.execut(vsql)
     def mudar_quantidade(self,produto,q):#update
         vsql = f'UPDATE tb_produtos SET N_QUANTIDADE={q} WHERE N_ID={produto.id}'
@@ -58,6 +58,7 @@ class Estoque:
         self.execut(vsql)
     def atualizar_produto(self,produto):
         dados = produto.dadosback()
+        
         vsql = f"""UPDATE tb_produtos SET
             T_NOME_PRODUTO='{dados['nome']}',
             N_VALOR_VENDA100='{dados['valor_venda']}',
@@ -65,7 +66,8 @@ class Estoque:
             T_GENERO = '{dados['genero']}',
             T_CATEGORIA='{dados['categoria']}',
             N_COD_BARRA='{dados['cod']}',
-            N_VALOR_COMPRA100 = '{dados['valor_venda']}'
+            N_VALOR_COMPRA100 = '{dados['valor_compra']}'
         WHERE N_ID={dados['id']}"""
+
         self.execut(vsql)
 

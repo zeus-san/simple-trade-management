@@ -1,9 +1,10 @@
+
 import PySimpleGUI as sg
 import Estoque
 from Menu_cadastro import Menu_cadastro
 from Menu_config import Menu_config
 from Menu_atualizar import Menu_atualizar
-import Tratar_eventos
+import tratamento_principal
 import config
 class Menu_principal:
     def init(self):
@@ -12,12 +13,12 @@ class Menu_principal:
         self.lista_pesquisa = []
         self.lista_compra = []
         self.colunas = config.COLUNAS
-        self.colunas_compra = ['id','nome','valor_venda','quantidade']
+        self.colunas_compra = ['id','unidades','quantidade','nome','valor_venda']
         self.estoque = Estoque.Estoque()
-        self.produto_linha = Tratar_eventos.principal().produto_linha
+        self.produto_linha = tratamento_principal.principal().produto_linha
         self.iniciar_lista_pesquisa()
-        self.colunas_lista(self.colunas,self.titulos)
-        self.colunas_lista(self.colunas_compra,self.titulos_compra)
+        self.estilizacao_dos_titulos_colunas(self.colunas,self.titulos)
+        self.estilizacao_dos_titulos_colunas(self.colunas_compra,self.titulos_compra)
         self.execucao_tela_principal()
 
 
@@ -29,9 +30,36 @@ class Menu_principal:
                     [sg.Button('Atualizar\nproduto',size=(10,2),key='Atualizar_pdt')]
                         ]
         colunaMeio = [
-                [sg.Input(enable_events=True,key='pesquisa'),sg.Button('Atualizar',key='atualizar_list')],
+                [sg.Input(enable_events=True,key='pesquisa'),
+                 sg.Button('Atualizar',key='atualizar_list'),
+                 sg.Button('Fracionado',key='fracionado')
+                ],
                 [sg.Table(self.lista_pesquisa,headings=self.titulos,key='-LISTA_PESQUISA-',size=(45,15),expand_x = True,enable_events=True)],#lista produtos
-                [sg.Table([],headings=self.titulos_compra,size=(45,15),key='-LISTA_COMPRA-',expand_x = True,enable_events=True)],#lista compra
+                
+                [ #Tabela com a lista de itens sendo comprados
+                 sg.Table(
+                     [],
+                     headings=self.titulos_compra,size=(45,15),
+                     key='-LISTA_COMPRA-',
+                     expand_x = True,
+                     auto_size_columns = False,
+                     max_col_width=2,
+                     select_mode=sg.TABLE_SELECT_MODE_BROWSE,
+                     col_widths=(4,4,4,25,4),
+                     justification='center',
+                     #enable_events=True,
+                     right_click_menu=['Unusedi', ['Editar', 'Apagar::lista_compra_rig_click_menu', 'Cancelar::lista_compra_rig_click_menu', ]],
+                     )
+                ],
+                
+                [#
+                 sg.Frame('Total',[
+                        [sg.T('',)],
+                        [sg.Text(' 00 ',key='total',justification='rigth',expand_x=True,font=('arial 15'))],],
+                        expand_x=True,
+                        )
+                ],
+                
                 [
                  sg.Button('Vender',focus=True),
                  sg.Text('',size=(20,1),key='AVISO'),
@@ -41,8 +69,8 @@ class Menu_principal:
                  ]
                 ]
         coluna_price = [
-                [sg.Text("Total:",background_color=None)],
-                [sg.Text()],
+                [sg.Button("Fechar",key='Cancelar')],
+                [ sg.Button("Configurações",key='Configurar_pdt')],
                 [sg.Text()]
         
         
@@ -53,20 +81,17 @@ class Menu_principal:
                 [
                  sg.Column(colunaButtao),
                  sg.Column(colunaMeio,justification='center'),
-                 sg.Column(coluna_price,background_color='#DCDCDC',size=(50,50))],
-                [
-                 sg.Button('OK',tooltip='Aperte aqui'), 
-                 sg.Button("Fechar",key='Cancelar'),
-                 sg.Button("Configurações",key='Configurar_pdt')]
+                 sg.Column(coluna_price)],
+               
                 ]
         return layout
     def execucao_tela_principal(self):
         layout = self.layout_tela()
         
         # Aqui eu esntacio
-        self.window = sg.Window('Titulo da Janela', layout,size=(900,750))
+        self.window = sg.Window('Titulo da Janela', layout,font='arial 16')
         # Loop de eventos para processar "eventos" e obter os "valores" das entradas
-        tratador_de_eventos_principal = Tratar_eventos.principal()
+        tratador_de_eventos_principal = tratamento_principal.principal()
         event = None
         butoes_especiais = {'Casdastrar_pdt':Menu_cadastro().iniciar,
                             'Atualizar_pdt':Menu_atualizar().iniciar,
@@ -89,22 +114,21 @@ class Menu_principal:
 
             #print('Voce digitou ', values[0])
         self.window.close()
-    def colunas_lista(self,colunas,titulos_das_colunas):
+    def estilizacao_dos_titulos_colunas(self,colunas,titulos_das_colunas):
         #definir os titulos das colunas que irao aparecer na tela
-        textos_titulo_coluna = {'id':'id',
+        textos_titulo_coluna = {'id':'Id',
                    'nome':'Nome',
                    'valor_venda':'Valor',
-                   'quantidade':'Quantidade',
+                   'quantidade':'Quant',
                    'genero':'Genero',
                    'categoria':'Categoria',
                    'cod':'Codig Barra',
-                   'valor_compra':'Valor Custo'}
+                   'valor_compra':'Valor Custo',
+                   'unidades':'Unid'}
 
         for row in colunas:
             titulo = textos_titulo_coluna[row]
             titulos_das_colunas.append(titulo)
-
-
 
     def iniciar_lista_pesquisa(self):
         self.lista_pesquisa = self.produto_linha(self.estoque.consulta_todos_produtos(),self.colunas)

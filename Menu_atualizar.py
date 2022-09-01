@@ -1,5 +1,5 @@
 import PySimpleGUI as sg
-from Tratar_eventos import atualizar
+from tratamento_update import atualizar
 import config
 class Menu_atualizar:
     def iniciar(self):
@@ -8,8 +8,8 @@ class Menu_atualizar:
         layout = [
             [
              sg.Text('Digite o id do Produto'),
-             sg.Input(key='identi'),
-             sg.Button('Pesquisar',key='pesquisa')
+             sg.Input(key='identi',disabled=True),
+             sg.Button('Pesquisar',key='pesquisar')
              ],
             [sg.Text('Nome do produto')],
             [sg.Input(expand_x=True,key='nome')],
@@ -23,15 +23,15 @@ class Menu_atualizar:
              ],
              [
              sg.Text('Valor'),
-             sg.Input(0,size=5,key='valor_venda'),
+             sg.Input(0,size=5,key='valor_venda',enable_events=True),
              sg.Text('Quantidade'),
-             sg.Input(0,size=5,key='quantidade'),
+             sg.Input(0,size=5,key='quantidade',enable_events=True),
              sg.Text('Valor Compra'),
-             sg.Input(0,size=5,key='valor_compra'),
+             sg.Input(0,size=5,key='valor_compra',enable_events=True),
              ]
             ,
             [sg.Text('Codigo barra'),sg.Input('00000000000000000000000000',key='cod')],
-            [sg.Button('Atualizar'),sg.Button('Cancelar',focus=True)],
+            [sg.Button('Atualizar',key='atualizar'),sg.Button('Cancelar',focus=True)],
             ]
         return layout
     def execucao_tela_atualizar(self):
@@ -40,11 +40,15 @@ class Menu_atualizar:
         window = sg.Window('Titulo da Janela', layout)
         # Loop de eventos para processar "eventos" e obter os "valores" das entradas
         tratar = atualizar()
-        while True:
+        executando = True
+        while executando:
             event, values = window.read()
             if event == sg.WIN_CLOSED or event == 'Cancelar': # se o usuário fechar a janela ou clicar em cancelar
                 break
             tratar.iniciar(window,event,values)
-            sg.popup(tratar.validacao,keep_on_top=True,title="Situação")
+            executando = tratar.rodando
             
         window.close()
+
+
+

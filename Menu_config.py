@@ -1,4 +1,8 @@
-from curses import window
+#remodelar
+
+
+
+
 import PySimpleGUI as sg
 import config
 class Menu_config:
@@ -16,19 +20,24 @@ class Menu_config:
             [sg.Button('Confirmar'),sg.Button('Cancelar')]
         ]
         return layout
+
+    
     def execucao_tela_config(self):
         layout = self.layout_tela()
 
         window = sg.Window("Configuracoes",layout=layout,size=(400,600),keep_on_top=True)
 
-        tratar = Tratar_events()
-        while True:
+        tratar_events = Tratar_events()
+        executando = True
+        while executando:
             event , values = window.read()
             if event == sg.WIN_CLOSED or event == "Cancelar":
                 break
-            tratar.iniciar(window,event,values)
+            tratar_events.iniciar(window,event,values)
+            executando = tratar_events.rodando
+        window.close()
             
-          
+    
     def default_valores(self):
         self.valores = {
                    'quantidade':'Quantidade',
@@ -36,6 +45,7 @@ class Menu_config:
                    'categoria':'Categoria',
                    'cod':'Codig Barra',
                    'valor_compra':'Valor de Custo'}
+    
     def valor_checkbox(self,valor):
         if valor in self.dados['campos']:
             return True
@@ -48,6 +58,7 @@ class Tratar_events:
         self.event = event
         self.values = values
         self.dados = config.config.ler_dados()
+        self.rodando = True
         self.tratar()
 
     def tratar(self):
@@ -72,7 +83,8 @@ class Tratar_events:
                      
                         self.dados['campos'].append(chave)
        
-        config.config.gravar_dados(self.dados)                
+        config.config.gravar_dados(self.dados)     
+        self.rodando = False           
 
                 
 

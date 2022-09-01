@@ -1,6 +1,8 @@
+from tkinter import Menu
 import PySimpleGUI as sg
-import Tratar_eventos
+import tratamento_cadastrar
 import config
+
 class Menu_cadastro:
     def iniciar(self):
         self.execucao_tela_cadastrar()
@@ -23,14 +25,14 @@ class Menu_cadastro:
              sg.Text('Quantidade'),
              sg.Input(0,size=5,key='quantidade'),
              sg.Text('Valor Compra'),
-             sg.Input(0,size=5,key='valor_compra'),
+             sg.Input(0,size=5,key='valor_compra',enable_events=True),
              ],
             [
              sg.Text('Codigo barra'),
              sg.Input('00000000000000000000000000',key='cod')
              ],
             [
-             sg.Button('Cadastrar'),
+             sg.Button('Cadastrar', key='finalizar'),
              sg.Button('Cancelar',focus=True)],
             ]  
         return layout
@@ -38,16 +40,17 @@ class Menu_cadastro:
         
         layout = self.layout_tela()
         # Aqui eu esntacio
-        window = sg.Window('Titulo da Janela', layout,size=(400,200),keep_on_top=True)
+        window = sg.Window('Cadastrar Produto', layout,size=(400,200),keep_on_top=True)
         # Loop de eventos para processar "eventos" e obter os "valores" das entradas
-        
-        while True:
+        executando = True
+        while executando:
             event, values = window.read()
             if event == sg.WIN_CLOSED or event == 'Cancelar': # se o usuário fechar a janela ou clicar em cancelar
                 break
-            tratar = Tratar_eventos.cadastrar()
+            tratar = tratamento_cadastrar.cadastrar()
             tratar.iniciar(window,event,values)
-            sg.popup(tratar.validacao,keep_on_top=True,title="Situação")
+            executando = tratar.rodando
+            
             
         window.close()
 
